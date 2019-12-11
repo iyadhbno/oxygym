@@ -1,17 +1,11 @@
-<?php
-include_once "../config.php";
-
-class commandeC
-{
-	
- 
-}
+<?PHP
+include "../config.php";
+class commandeC {
 
 
-//////////////////////////////////////////////////////
-	
-	function affichercommande(){
-		$sql="SElECT * From commande ORDER BY idcom";
+	function afficherCommande(){
+		//$sql="SElECT * From commande e inner join formationphp.employe a on e.cin= a.cin";
+		$sql="SElECT * From commande";
 		$db = config::getConnexion();
 		try{
 		$liste=$db->query($sql);
@@ -20,15 +14,53 @@ class commandeC
         catch (Exception $e){
             die('Erreur: '.$e->getMessage());
         }	
+	}
 
+	
+	////////////////////////////////////////
+
+
+	function ajouterCommande($commandec){
+		$sql="insert into commande (idcom,idclient,datecom,etatcom,prixcom,idlivreur,lieucom,idLC) values (:idcom,:idclient,:datecom,:prixcom,:idlivreur,:lieucom,:idLC)";
+		$db = config::getConnexion();
+		try{
+        $req=$db->prepare($sql);
+		$idcom=$commandec->getIdcom();
+		$idclient=$commandec->getIdclient();
+		$datecom=$commandec->getDatecom();
+		$etatcom=$commandec->getEtatcom();
+		$prixcom=$commandec->getPrixcom();
+        $idlivreur=$commandec->getIdlivreur();
+        $lieucom=$commandec->getLieucom();
+        $idLC=$commandec->getIdLC();
+
+		$req->bindValue(':idcom',$idcom);
+		$req->bindValue(':idclient',$idclient);
+		$req->bindValue(':datecom',$datecom);
+		$req->bindValue(':etatcom',$etatcom);
+		$req->bindValue(':prixcom',$prixcom);
+		$req->bindValue(':idlivreur',$idlivreur);
+		$req->bindValue(':lieucom',$lieucom);
+		$req->bindValue(':idLC',$idLC);
+		
+
+
+		
+            $req->execute();
+           
+        }
+        catch (Exception $e){
+            echo 'Erreur: '.$e->getMessage();
+        }
+		
 	}
 
 
-	/////////////////////////////////////////
+	///////////////////////////////////////////////////
 
 
-function supprimercommande($idcom){
-		$sql="DELETE FROM commande where idcom= :idcom";
+	function supprimerCommande($idcom){
+		$sql="DELETE FROM commande where  idcom= :idcom";
 		$db = config::getConnexion();
         $req=$db->prepare($sql);
 		$req->bindValue(':idcom',$idcom);
@@ -42,32 +74,39 @@ function supprimercommande($idcom){
 	}
 
 
+	///////////////////////////////////////////////////
 
-	///////////////////////////////////////////
 
-
-	function modifiercommande($commande,$idcom){
-		$sql="UPDATE commande SET idcom=:idcom, datecom=:datecom, prixcom=:prixcom, lieucom=:lieucom, idclient=:idclient, idlivreur=:idlivreur, etatcom=:etatcom WHERE idcom=:idcom";
+	function modifierCommande($commandec,$idcom){
+		$sql="UPDATE commande SET  idcom=:idcom,idclient=:idclient,datecom=:datecom,etatcom=:etatcom,prixcom=:prixcom,idlivreur=:idlivreur,lieucom=:lieucom,idLC=:idLC WHERE idcom=:dicom";
 		
 		$db = config::getConnexion();
 		//$db->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
 try{		
-        $req=$db->prepare($sql);
-		$idcom=$commande->getidcom();
-        $datecom=$commande->getdatecom();
-        $prixcom=$commande->getprixcom();
-        $lieucom=$commande->getlieu();
-        $idclient=$commande->getidclient();
-        $idlivreur=$commande->getidlivreur();
-        $etatcom=$commande->getetatcom();
+		$req=$db->prepare($sql);
+		$idcom=$commandec->getIdcom();
+		$idclient=$commandec->getIdclient();
+		$datecom=$commandec->getDatecom();
+		$etatcom=$commandec->getEtatcom();
+		$prixcom=$commandec->getPrixcom();
+        $idlivreur=$commandec->getIdlivreur();
+        $lieucom=$commandec->getLieucom();
+        $idLC=$commandec->getIdLC();
 
-
-
-$datas = array( ':idc'=>$idC, ':nomC'=>$nomC,':famille'=>$famille);
 	
-		$req->bindValue(':idC',$idC);
-		$req->bindValue(':nomC',$nomC);
-		$req->bindValue(':famille',$famille);
+
+		$datas = array(':idcom'=>$idcom,':idclient'=>$idclient, ':datecom'=>$datecom, ':etatcom'=>$etatcom,':prixcom'=>$prixcom,':idlivreur'=>$idlivreur,':lieucom'=>$lieucom,':idLC'=>$idLC);
+		$req->bindValue(':idcom',$idcom);
+		$req->bindValue(':idclient',$idclient);
+		$req->bindValue(':datecom',$datecom);
+		$req->bindValue(':etatcom',$etatcom);
+		$req->bindValue(':prixcom',$prixcom);
+		$req->bindValue(':idlivreur',$idlivreur);
+		$req->bindValue(':lieucom',$lieucom);
+		$req->bindValue(':idLC',$idLC);
+
+		
+		
             $s=$req->execute();
 			
            // header('Location: index.php');
@@ -79,6 +118,25 @@ $datas = array( ':idc'=>$idC, ':nomC'=>$nomC,':famille'=>$famille);
         }
 		
 	}
+	///////////////////////////////////////////////////////////
+	
+
+
+	function recupererCommande($idcom){
+		$sql="SELECT * from  commande where idcom=$idcom";
+		$db = config::getConnexion();
+		try{
+		$liste=$db->query($sql);
+		return $liste;
+		}
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }
+	}
+
+
+
 
 }
+
 ?>

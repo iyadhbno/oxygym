@@ -1,9 +1,9 @@
 <?PHP
 include "../core/commandeC.php";
-$produitC=new commandeC();
-if (isset($_POST["idCom"])){
-	$produitC->supprimercommande($_POST["idCom"]);
-	header('Location: Gestion Commande.php');
+$commandeC=new CommandeC();
+if (isset($_POST["idcom"])){
+	$commandeC->supprimerCommande($_POST["idcom"]);
+	header('Location: Gestions Commandes.php');
 }
 
 ?>
